@@ -1,0 +1,132 @@
+-- vim: ts=4 sw=4 noet ai cindent syntax=lua
+--[[
+Conky, a system monitor, based on torsmo
+
+Any original torsmo code is licensed under the BSD license
+
+All code written since the fork of torsmo is licensed under the GPL
+
+Please see COPYING for details
+
+Copyright (c) 2004, Hannu Saransaari and Lauri Hakkarainen
+Copyright (c) 2005-2012 Brenden Matthews, Philip Kovacs, et. al. (see AUTHORS)
+All rights reserved.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+]]
+
+conky.config = {
+    alignment = 'top_right',
+    background = false,
+    border_width = 10,
+    cpu_avg_samples = 2,
+	default_color = 'white',
+    default_outline_color = 'white',
+    default_shade_color = 'white',
+    draw_borders = false,
+    draw_graph_borders = true,
+    draw_outline = false,
+    draw_shades = false,
+    use_xft = true,
+    font = 'DejaVu Sans Mono:size=12',
+    gap_x = 30,
+    gap_y = 55,
+    minimum_height = 5,
+	minimum_width = 5,
+    net_avg_samples = 2,
+    no_buffers = true,
+    out_to_console = false,
+    out_to_stderr = false,
+    extra_newline = false,
+    own_window = true,
+    own_window_argb_visual = true,
+    own_window_argb_value = 150,
+    own_window_class = 'Conky',
+    own_window_type = 'desktop',
+    stippled_borders = 0,
+    update_interval = 1.0,
+    uppercase = false,
+    use_spacer = 'none',
+    show_graph_scale = false,
+    show_graph_range = false
+}
+
+conky.text = [[
+$hr
+${color}                 My PC Specs
+$hr
+################
+# Machine info #
+################
+# ${scroll 16 $nodename - $sysname $kernel on $machine | }
+${color grey}Conky -v:$color ${conky_version}
+${color grey}Distribution:$color ${exec lsb_release -d | cut -c14-31} ${machine}
+${color grey}Kernel:$color $sysname - ${kernel}
+${color grey}Hostname:$color ${nodename}
+${color grey}Uptime:$color $uptime
+${color grey}Date Time:$color $time
+$hr
+############
+# CPU Info #
+############
+${color grey}CPU:$color ${exec lscpu | grep 'Model name' | cut -c22-62}
+${color grey}CPU Frequency:$color $freq MHz
+# ${color grey}Frequency (in GHz):$color $freq_g
+${color grey}CPU Usage:$color $cpu% ${cpubar 4}
+${color grey}CPU Temp:$color ${exec sensors | grep 'Package id 0:' | cut -c17-20}°C
+$hr
+############
+# GPU Info #
+############
+# Get GPU Fan Speed
+# nvidia-settings -q all | grep  -i "Attribute 'GPUCurrentFanSpeedRPM'" | cut -d : -f4 | cut -d . -f1
+${color grey}GPU:$color NVIDIA ${execpi .001 (nvidia-smi --query-gpu=gpu_name --format=csv,noheader)}
+${color grey}GPU Frequency:$color ${execpi .001 (nvidia-smi --query-gpu=clocks.sm --format=csv,noheader)}
+${color grey}GPU Usage:$color ${execpi .001 (nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader)}
+${color grey}GPU Temp:$color ${execpi .001 (nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader)}°C
+# I have two fans in my GPU, if you have more or less, add or remove a row selecting the correct fan
+# otherwise, if you have no fans, just delete these 2 next rows
+${color grey}GPU Fan[0]:$color ${exec nvidia-settings -q all | grep  -i "Attribute 'GPUCurrentFanSpeedRPM'" | grep "fan:0" | cut -c61-64} RPM
+${color grey}GPU Fan[1]:$color ${exec nvidia-settings -q all | grep  -i "Attribute 'GPUCurrentFanSpeedRPM'" | grep "fan:1" | cut -c61-64} RPM
+${color grey}GPU VRAM Frequency:$color ${execpi .001 (nvidia-smi --query-gpu=clocks.mem --format=csv,noheader)}
+${color grey}GPU VRAM Usage:${color} ${execpi .001 (nvidia-smi --query-gpu=utilization.memory --format=csv,noheader)}
+$hr
+############
+# RAM Info #
+############
+${color grey}RAM Usage:$color $mem/$memmax - $memperc% ${membar 4}
+${color grey}Swap Usage:$color $swap/$swapmax - $swapperc% ${swapbar 4}
+$hr
+################
+# Storage Info #
+################
+${color grey}File systems:
+ /: $color${fs_used /}/${fs_size /} ${fs_bar 6 /}
+$hr
+################
+# Network Info #
+################
+${color grey}Networking:
+ Up:$color ${upspeed eth0} ${color grey} - Down:$color ${downspeed eth0}
+$hr
+##################
+# Processes Info #
+##################
+${color grey}Processes:$color $processes  ${color grey}Running:$color $running_processes
+${color grey}Name               PID    CPU%   MEM%
+${color lightgrey} ${top name 1} ${top pid 1} ${top cpu 1} ${top mem 1}
+${color lightgrey} ${top name 2} ${top pid 2} ${top cpu 2} ${top mem 2}
+${color lightgrey} ${top name 3} ${top pid 3} ${top cpu 3} ${top mem 3}
+${color lightgrey} ${top name 4} ${top pid 4} ${top cpu 4} ${top mem 4}
+$hr
+]]
