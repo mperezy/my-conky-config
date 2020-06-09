@@ -40,7 +40,7 @@ conky.config = {
     use_xft = true,
     font = 'DejaVu Sans Mono:size=12',
     gap_x = 30,
-    gap_y = 55,
+    gap_y = 45,
     minimum_height = 5,
 	minimum_width = 5,
     net_avg_samples = 2,
@@ -63,77 +63,81 @@ conky.config = {
 
 conky.text = [[
 ${color yellow}$hr
-${color}                 My PC Specs
+${color}${font MonospaceMonospace:bold:size=12}                  My PC Specs
 ${color yellow}$hr
 ################
 # Machine info #
 ################
-# ${scroll 16 $nodename - $sysname $kernel on $machine | }
-${color grey}Conky -v:$color ${conky_version}
-${color grey}Distribution:$color ${exec lsb_release -d | cut -c14-31} ${machine}
-${color grey}Kernel:$color $sysname - ${kernel}
-${color grey}Hostname:$color ${nodename}
-${color grey}Uptime:$color $uptime
-${color grey}Date Time:$color $time
-${color yellow}$hr
+${color}${font MonospaceMonospace:bold:size=10}Conky -v:${font Monospace:size=10}$color ${conky_version}
+$color${font Monospace:bold:size=10}Distribution:${font Monospace:size=10}$color ${exec lsb_release -d | cut -c14-31} ${machine}
+$color${font Monospace:bold:size=10}Kernel:${font Monospace:size=10}$color $sysname - ${kernel}
+$color${font Monospace:bold:size=10}Hostname:${font Monospace:size=10}$color ${nodename}
+$color${font Monospace:bold:size=10}Uptime:${font Monospace:size=10}$color $uptime
+$color${font Monospace:bold:size=10}Date Time:${font Monospace:size=10}$color $time
+
 ############
 # CPU Info #
 ############
-${color grey}CPU:$color ${exec lscpu | grep 'Model name' | cut -c22-62}
-${color grey}CPU Frequency:$color $freq MHz
-# ${color grey}Frequency (in GHz):$color $freq_g
-${color grey}CPU Usage:$color $cpu% ${color cyan}${cpubar 4}
-${color grey}CPU Temp:$color ${exec sensors | grep 'Package id 0:' | cut -c17-20}°C
-${color grey}CPU AIO_Pump:$color ${exec sensors | grep 'fan7:' | cut -b 24-31}
-${color grey}Top Fan (cpu_fan):${color} ${exec sensors | grep 'fan2:' | cut -b 24-31}
-${color grey}Front Fan[0]:${color} ${exec sensors | grep 'fan3:' | cut -b 25-31}
-${color grey}Front Fan[1]:${color} ${exec sensors | grep 'fan4:' | cut -b 24-31}
-${color grey}Rear Fan:${color} ${exec sensors | grep 'fan1:' | cut -b 24-31}
-${color yellow}$hr
+${color white} ${font Monospace:bold:size=12} CPU ${color yellow} $hr
+$color${font Monospace:bold:size=10}Name:${font Monospace:size=10}$color${exec lscpu | grep 'Model name' | cut -b 33-60}
+$color${font Monospace:bold:size=10}Clock Frequency:${font Monospace:size=10}$color $freq MHz
+$color${font Monospace:bold:size=10}Usage:${font Monospace:size=10}$color $cpu% ${color cyan}${cpubar 4}
+$color${font Monospace:bold:size=10}Temp:${font Monospace:size=10}$color ${exec sensors | grep 'Package id 0:' | cut -c17-20}°C
+$color${font Monospace:bold:size=10}AIO_Pump:${font Monospace:size=10}$color ${exec sensors | grep 'fan7:' | cut -b 23-31 | sed "s/[^0-9]//g"} RPM
+$color${font Monospace:bold:size=10}Top Fan (cpu_fan):${font Monospace:size=10}$color ${exec sensors | grep 'fan2:' | cut -b 23-31 | sed "s/[^0-9]//g"} RPM
+$color${font Monospace:bold:size=10}Rear Fan:${font Monospace:size=10}$color ${exec sensors | grep 'fan1:' | cut -b 23-31 | sed "s/[^0-9]//g"} RPM
+$color${font Monospace:bold:size=10}Front Fan (internal):${font Monospace:size=10}$color ${exec sensors | grep 'fan4:' | cut -b 23-31 | sed "s/[^0-9]//g"} RPM
+$color${font Monospace:bold:size=10}Front Fan (external):${font Monospace:size=10}$color ${exec sensors | grep 'fan3:' | cut -b 23-31 | sed "s/[^0-9]//g"} RPM
+
 ############
 # GPU Info #
 ############
-# Get GPU Fan Speed
-# nvidia-settings -q all | grep  -i "Attribute 'GPUCurrentFanSpeedRPM'" | cut -d : -f4 | cut -d . -f1
-${color grey}GPU:$color NVIDIA ${execpi .001 (nvidia-smi --query-gpu=gpu_name --format=csv,noheader)}
-${color grey}GPU Driver -v:$color ${exec nvidia-smi --query-gpu=driver_version --format=csv,noheader}
-${color grey}GPU Frequency:$color ${execpi .001 (nvidia-smi --query-gpu=clocks.sm --format=csv,noheader)}
-${color grey}GPU Usage:$color ${execpi .001 (nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader)}
-${color grey}GPU Temp:$color ${execpi .001 (nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader)}°C
-${color grey}GPU Power:$color ${exec nvidia-smi --query-gpu=power.draw --format=csv,noheader}
-# I have two fans in my GPU, if you have more or less, add or remove a row selecting the correct fan
-# otherwise, if you have no fans, just delete these 2 next rows
-${color grey}GPU Fan[0]:$color ${exec nvidia-settings -q all | grep  -i "Attribute 'GPUCurrentFanSpeedRPM'" | grep "fan:0" | cut -b 61- | cut -b -4} RPM
-${color grey}GPU Fan[1]:$color ${exec nvidia-settings -q all | grep  -i "Attribute 'GPUCurrentFanSpeedRPM'" | grep "fan:1" | cut -b 61- | cut -b -4} RPM
-${color grey}GPU VRAM Frequency:$color ${execpi .001 (nvidia-smi --query-gpu=clocks.mem --format=csv,noheader)}
-${color grey}GPU VRAM Usage:${color} ${execpi .001 (nvidia-smi --query-gpu=utilization.memory --format=csv,noheader)}
-${color yellow}$hr
+${color white} ${font Monospace:bold:size=12} Graphic Card ${color yellow} $hr
+$color${font Monospace:bold:size=10}Name:${font Monospace:size=10}$color NVIDIA ${execpi .001 (nvidia-smi --query-gpu=gpu_name --format=csv,noheader)}
+$color${font Monospace:bold:size=10}Driver version:${font Monospace:size=10}$color ${exec nvidia-smi --query-gpu=driver_version --format=csv,noheader}
+$color${font Monospace:bold:size=10}Clock Frequency:${font Monospace:size=10}$color ${exec nvidia-smi --query-gpu=clocks.sm --format=csv,noheader}
+$color${font Monospace:bold:size=10}Usage:${font Monospace:size=10}$color ${execpi .001 (nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader)}
+$color${font Monospace:bold:size=10}Temp:${font Monospace:size=10}$color ${execpi .001 (nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader)}°C
+$color${font Monospace:bold:size=10}Power:${font Monospace:size=10}$color ${exec nvidia-smi --query-gpu=power.draw --format=csv,noheader}
+$color${font Monospace:bold:size=10}Fan[0]:${font Monospace:size=10}$color ${exec nvidia-settings -q all | grep  -i "Attribute 'GPUCurrentFanSpeedRPM'" | grep "fan:0" | cut -b 64- | sed "s/[^0-9]//g"} RPM
+$color${font Monospace:bold:size=10}Fan[1]:${font Monospace:size=10}$color ${exec nvidia-settings -q all | grep  -i "Attribute 'GPUCurrentFanSpeedRPM'" | grep "fan:1" | cut -b 64- | sed "s/[^0-9]//g"} RPM
+$color${font Monospace:bold:size=10}VRAM Frequency:${font Monospace:size=10}$color ${execpi .001 (nvidia-smi --query-gpu=clocks.mem --format=csv,noheader)}
+$color${font Monospace:bold:size=10}VRAM Usage:${font Monospace:size=10}$color ${execpi .001 (nvidia-smi --query-gpu=utilization.memory --format=csv,noheader)}
+
 ############
 # RAM Info #
 ############
-${color grey}RAM Usage:$color $mem/$memmax - $memperc% ${color lightblue}${membar 4}
-${color grey}Swap Usage:$color $swap/$swapmax - $swapperc% ${color lightblue}${swapbar 4}
-${color yellow}$hr
+${color white} ${font Monospace:bold:size=12} RAM ${color yellow} $hr
+$color${font Monospace:bold:size=10}RAM Usage:
+ ${font Monospace:size=10}$color $mem/$memmax - $memperc% ${color lightblue}${membar 4}
+$color${font Monospace:bold:size=10}Swap Usage:
+ ${font Monospace:size=10}$color $swap/$swapmax - $swapperc% ${color lightblue}${swapbar 4}
+
 ################
 # Storage Info #
 ################
-${color grey}File systems:
- /: $color${fs_used /}/${fs_size /} ${color lightgreen}${fs_bar 6 /}
-${color yellow}$hr
+${color white} ${font Monospace:bold:size=12} Storage ${color yellow} $hr
+$color${font Monospace:bold:size=10}File systems:
+ /: ${font Monospace:size=10}$color${fs_used /}/${fs_size /} ${color lightgreen}${fs_bar 4 /}
+
 ################
 # Network Info #
 ################
-${color grey}Networking:
- Up:$color ${upspeed eth0} ${color grey} - Down:$color ${downspeed eth0}
-${color yellow}$hr
+${color white} ${font Monospace:bold:size=12} Network ${color yellow} $hr
+$color${font Monospace:bold:size=10}Upload Speed:${font Monospace:size=10}$color ${upspeed eth0} $color${font Monospace:bold:size=10} Download Speed:${font Monospace:size=10}$color ${downspeed eth0}
+$color${font Monospace:bold:size=10}Public IP Address:${font Monospace:size=10}$color ${exec curl ifconfig.me}
+$color${font Monospace:bold:size=10}Private IP Address:${font Monospace:size=10}$color ${exec hostname -I | awk '{print $1}'}
+
 ##################
 # Processes Info #
 ##################
-${color grey}Processes:$color $processes  ${color grey}Running:$color $running_processes
-${color grey}Name               PID    CPU%   MEM%
-${color lightgrey} ${top name 1} ${top pid 1} ${top cpu 1} ${top mem 1}
-${color lightgrey} ${top name 2} ${top pid 2} ${top cpu 2} ${top mem 2}
-${color lightgrey} ${top name 3} ${top pid 3} ${top cpu 3} ${top mem 3}
-${color lightgrey} ${top name 4} ${top pid 4} ${top cpu 4} ${top mem 4}
+${color white} ${font Monospace:bold:size=12} Process ${color yellow} $hr
+$color${font Monospace:bold:size=10}Processes:${font Monospace:size=10}$color $processes  $color${font Monospace:bold:size=10}Running:${font Monospace:size=10}$color $running_processes
+$color${font Monospace:bold:size=10}Name               PID    CPU%   MEM%
+${color white}${font Monospace:size=10} ${top name 1} ${top pid 1} ${top cpu 1} ${top mem 1}
+${color white} ${top name 2} ${top pid 2} ${top cpu 2} ${top mem 2}
+${color white} ${top name 3} ${top pid 3} ${top cpu 3} ${top mem 3}
+${color white} ${top name 4} ${top pid 4} ${top cpu 4} ${top mem 4}
+${color white} ${top name 5} ${top pid 5} ${top cpu 5} ${top mem 5}
 ${color yellow}$hr
 ]]
