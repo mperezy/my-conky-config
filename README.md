@@ -71,42 +71,56 @@
   Save changes and then:
   ```
   $ sudo update-grub
-  $ reboot 
-  $ sudo modprobe -v nct6775 //after reboot
+  $ reboot
   ```
 
-  * Just to mention that `sudo modprobe -v nct6775` need to be executed after each login, I will work on that to execute it with `sudo` privileges automatically on login.
+  * Just to mention that this next command: `modprobe -v nct6775` needs to be executed at login in order to check the fans speed and it needs to be executed as sudo, so we need to add that command into the **visudo** file in order to not be prompted to enter the sudo password. So, to solve that little problem, please follow the next:
+  
+    ```
+    $ sudo visudo
+
+    ...
+    root    ALL=(ALL:ALL) ALL
+
+    # Members of the admin group may gain root privileges
+    %admin ALL=(ALL) ALL
+
+    # Allow members of group sudo to execute any command
+    %sudo   ALL=(ALL:ALL) ALL
+    <YOUR_USERNAME> ALL=(root) NOPASSWD: /bin modprobe -v nct6775
+    ...
+    ```
 
   Finally it works for me:
   ```
   $ sensors
   nct6798-isa-0290
   Adapter: ISA adapter
-  in0:                    +0.63 V  (min =  +0.00 V, max =  +1.74 V)
-  ...
-  in14:                   +0.62 V  (min =  +0.00 V, max =  +0.00 V)  ALARM
-  fan1:                  1253 RPM  (min =    0 RPM)
-  ...
-  fan7:                  2504 RPM  (min =    0 RPM)
-  SYSTIN:                 +34.0°C  (high = +80.0°C, hyst = +75.0°C)  sensor = thermistor
-  CPUTIN:                 +37.0°C  (high = +80.0°C, hyst = +75.0°C)  sensor = thermistor
+  in0:                     1.21 V  (min =  +0.00 V, max =  +1.74 V)
+  in1:                     1.01 V  (min =  +0.00 V, max =  +0.00 V)  ALARM
+  in2:                     3.39 V  (min =  +0.00 V, max =  +0.00 V)  ALARM
+  in3:                     3.33 V  (min =  +0.00 V, max =  +0.00 V)  ALARM
+  in4:                     1.72 V  (min =  +0.00 V, max =  +0.00 V)  ALARM
+  in5:                   216.00 mV (min =  +0.00 V, max =  +0.00 V)  ALARM
+  in6:                     0.00 V  (min =  +0.00 V, max =  +0.00 V)
+  in7:                     3.39 V  (min =  +0.00 V, max =  +0.00 V)  ALARM
+  in8:                     3.15 V  (min =  +0.00 V, max =  +0.00 V)  ALARM
+  in9:                   536.00 mV (min =  +0.00 V, max =  +0.00 V)  ALARM
+  in10:                  608.00 mV (min =  +0.00 V, max =  +0.00 V)  ALARM
+  in11:                  664.00 mV (min =  +0.00 V, max =  +0.00 V)  ALARM
+  in12:                    1.06 V  (min =  +0.00 V, max =  +0.00 V)  ALARM
+  in13:                  608.00 mV (min =  +0.00 V, max =  +0.00 V)  ALARM
+  in14:                  632.00 mV (min =  +0.00 V, max =  +0.00 V)  ALARM
+  fan1:                  1013 RPM  (min =    0 RPM)
+  fan2:                  1433 RPM  (min =    0 RPM)
+  fan3:                   801 RPM  (min =    0 RPM)
+  fan4:                   887 RPM  (min =    0 RPM)
+  fan5:                     0 RPM  (min =    0 RPM)
+  fan6:                     0 RPM  (min =    0 RPM)
+  fan7:                  2486 RPM  (min =    0 RPM)
+  SYSTIN:                 +25.0°C  (high = +80.0°C, hyst = +75.0°C)  sensor = thermistor
+  CPUTIN:                 +33.0°C  (high = +80.0°C, hyst = +75.0°C)  sensor = thermistor
   AUXTIN0:               -128.0°C    sensor = thermistor
-  ...
-  AUXTIN3:                +47.0°C    sensor = thermistor
-  PCH_CHIP_CPU_MAX_TEMP:   +0.0°C  
-  PCH_CHIP_TEMP:           +0.0°C  
-  PCH_CPU_TEMP:            +0.0°C  
-  PCH_MCH_TEMP:            +0.0°C  
-  intrusion0:            ALARM
-  intrusion1:            ALARM
-  beep_enable:           disabled
-
-  asus-isa-0000
-  Adapter: ISA adapter
-  cpu_fan:        0 RPM
-
-  coretemp-isa-0000
-  Adapter: ISA adapter
   Package id 0:  +36.0°C  (high = +86.0°C, crit = +100.0°C)
   Core 0:        +33.0°C  (high = +86.0°C, crit = +100.0°C)
   ...
@@ -114,7 +128,7 @@
   ```
 * If we didn't execute `modprobe -v nct6775` at every system start-up, we won't be able to see the fans information, that's why I added that command in **`conky-startup.sh`** to be executed at system start-up.
 
-* If those steps shared above, please go to the github issue thread shared before to try to find a solution for your motherboard.
+* If those steps shared above didn't work for you, please go to the github issue thread shared before to try to find a solution for your motherboard.
 
 ## Installation
 * Just copy the `.conkyrc` in `~/.conkyrc` with **`644`** permissions:
@@ -140,6 +154,6 @@
 * It will be the first time, so click on **Add**.
 
 * And that's it, you need to restart/logout and when login you will see conky on your Desktop:
-![](./.img/image2.png)
+![](./.img/image1.png)
 
 *  Feel free to customize it as you desire. Enjoy!!
