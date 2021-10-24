@@ -11,7 +11,7 @@
 * Sensors (lm-sensors) is a program that provides a hardware health monitoring driver for Linux such as temps and voltages
   from the CPU, Motherboard or GPU as well, we can check that information running `sensors` in terminal. But I had a problem
   trying to use this in my rig.
-  ```
+  ```bash
   $ sensors
     asus-isa-0000
     Adapter: ISA adapter
@@ -32,7 +32,7 @@
 * In my rig I have 4 fan configurations but seems that is printing the correct information, my motherboard is an ASUS ROG Maximus XI Hero (WI-FI) Z390. Searching about that issue, I found this [issue thread](https://github.com/lm-sensors/lm-sensors/issues/134#issuecomment-427486133). Following that thread it seems that my motherboard's IO chip it not matching to `sensors` program.
 
 * Running `sudo sensors-detect` detected an unknown Super IO chip as follow:
-  ```
+  ```bash
   $ sudo sensors-detect 
   [sudo] password for manuelperez: 
   # sensors-detect revision 6284 (2015-05-31 14:00:33 +0200)
@@ -57,7 +57,7 @@
   ``` 
 
 * Keep checking the github issue thread shared before, found [this comment](https://github.com/lm-sensors/lm-sensors/issues/134#issuecomment-442207103), following only the first step found that my Super IO chip is **`Nuvoton NCT6798D`**. So keep checking again this thread, found that I needed to add a boot parameter detailed [here](https://github.com/lm-sensors/lm-sensors/issues/134#issuecomment-518678263) that's why I added `acpi_enforce_resources=lax` in grub file:
-  ```
+  ```bash
   $ sudo nano /etc/default/grub 
 
   GRUB_DEFAULT=0
@@ -69,30 +69,29 @@
   ```
 
   Save changes and then:
-  ```
+  ```bash
   $ sudo update-grub
   $ reboot
   ```
 
-  * Just to mention that this next command: `modprobe -v nct6775` needs to be executed at login in order to check the fans speed and it needs to be executed as sudo, so we need to add that command into the **visudo** file in order to not be prompted to enter the sudo password. So, to solve that little problem, please follow the next:
+  * Just to mention that this next command: `modprobe -v nct6775` needs to be executed at boot in order to check the fans speed and it needs to be executed as sudo, so we need to add that command into a **rc.local** file in order to not be prompted to enter the sudo password. So, to solve this we must do the next:
   
+    ```bash
+    $ sudo touch /etc/rc.local # This if the file not exists.
+    $ sudo chmod 755 /etc/rc.local
     ```
-    $ sudo visudo
 
-    ...
-    root    ALL=(ALL:ALL) ALL
+    Then we need to add this content:
+    ```bash
+    #!/bin/sh -e
 
-    # Members of the admin group may gain root privileges
-    %admin ALL=(ALL) ALL
+    modprobe -v nct6775
 
-    # Allow members of group sudo to execute any command
-    %sudo   ALL=(ALL:ALL) ALL
-    <YOUR_USERNAME> ALL=(root) NOPASSWD: /bin modprobe -v nct6775
-    ...
+    exit 0
     ```
 
   Finally it works for me:
-  ```
+  ```bash
   $ sensors
   nct6798-isa-0290
   Adapter: ISA adapter
@@ -132,7 +131,7 @@
 
 ## Installation
 * Just copy the `.conkyrc` in `~/.conkyrc` with **`644`** permissions:
-  ```
+  ```bash
   $ cp .conkyrc ~/.conkyrc
   $ chmod 644 ~/.conkyrc
   $ chown $USER:$USER ~/.conkyrc
@@ -144,7 +143,7 @@
 * In my case, I prefered to executed it from *$HOME* folder, you can execute wherever place you want. Remember that you need to execute that bash file as an application, so:
 
 
-  ```
+  ```bash
    $ chmod a+x conky-startup.sh
   ```
 
