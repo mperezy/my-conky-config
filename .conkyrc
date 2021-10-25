@@ -99,8 +99,8 @@ $color${font Monospace:bold:size=10}Clock Frequency:${font Monospace:size=10}$co
 $color${font Monospace:bold:size=10}Usage:${font Monospace:size=10}$color ${execpi .001 (nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader)}
 $color${font Monospace:bold:size=10}Temp:${font Monospace:size=10}$color ${execpi .001 (nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader)}°C
 $color${font Monospace:bold:size=10}Power:${font Monospace:size=10}$color ${exec nvidia-smi --query-gpu=power.draw --format=csv,noheader}
-$color${font Monospace:bold:size=10}Fan[0]:${font Monospace:size=10}$color ${exec nvidia-settings -q all | grep  -i "Attribute 'GPUCurrentFanSpeedRPM'" | grep "fan:0" | cut -b 64- | sed "s/[^0-9]//g"} RPM
-$color${font Monospace:bold:size=10}Fan[1]:${font Monospace:size=10}$color ${exec nvidia-settings -q all | grep  -i "Attribute 'GPUCurrentFanSpeedRPM'" | grep "fan:1" | cut -b 64- | sed "s/[^0-9]//g"} RPM
+$color${font Monospace:bold:size=10}Fan[0]:${font Monospace:size=10}$color ${execi 60 nvidia-settings -q [fan:0]/GPUCurrentFanSpeedRPM -t} RPM / ${execi 60 nvidia-settings -q [fan:0]/GPUCurrentFanSpeed -t}%
+$color${font Monospace:bold:size=10}Fan[1]:${font Monospace:size=10}$color ${execi 60 nvidia-settings -q [fan:1]/GPUCurrentFanSpeedRPM -t} RPM / ${execi 60 nvidia-settings -q [fan:1]/GPUCurrentFanSpeed -t}%
 $color${font Monospace:bold:size=10}VRAM Frequency:${font Monospace:size=10}$color ${execpi .001 (nvidia-smi --query-gpu=clocks.mem --format=csv,noheader)}
 $color${font Monospace:bold:size=10}VRAM Usage:${font Monospace:size=10}$color ${execpi .001 (nvidia-smi --query-gpu=utilization.memory --format=csv,noheader)}
 
